@@ -22,15 +22,15 @@ All files contain full taxonomic information for the cluster. The last file is >
 Generates plots illustrating the distributions of calibrated read counts for lysates and homogenates for different groups of OTU clusters. The generated figures illustrate the following:
 
 Main figures:
-1. 'Fig2_All_Samples_500_Ratio.jpg': Lysate-to-homogenate read ratios for 856 treatment pairs. Part of Figure 2 from the paper.
-2. 'Fig2_treatment_exclusive_clusters.jpg': Arthropod clusters detected exclusively in either lysates or homogenates, aggregated by family. Second part of Figure 2 from the paper.
+1. `Fig2_All_Samples_500_Ratio.jpg`: Lysate-to-homogenate read ratios for 856 treatment pairs. Part of Figure 2 from the paper.
+2. `Fig2_treatment_exclusive_clusters.jpg`: Arthropod clusters detected exclusively in either lysates or homogenates, aggregated by family. Second part of Figure 2 from the paper.
 
 Supplementary figures:
-1. 'Fig_S2_matched_largest_lysate_surplus.jpg': Top 20 clusters (among those clusters occurring in more than 100 samples) with largest surplus in lysates (top panel) when compared with homogenates (bottom panel).
-2. 'Fig_S3_matched_largest_homogenate_surplus.jpg': Top 20 clusters (among those clusters occurring in more than 100 samples) with largest surplus in homogenates (top panel) when compared with homogenates (bottom panel).
-3. 'Fig_S4_Scatter_all_famillies.jpg': Scatterplot summarizing lysate to homogenate number of reads obtained per family (limited to Arthropoda), across 856 samples (treatment pairs).
-4. 'Fig_S5_15samples_reads_biomass.jpg': Selected samples - sequencing depth and biomass. Histogram shows the total number of reads per sample for both lysate and homogenate as well as the biomass (wet weight) of each sample.
-5. 'Fig_S6_15Samples_Top10_Ratio.jpg': Lysate-to-homogenate read ratios for 15 samples.
+1. `Fig_S2_matched_largest_lysate_surplus.jpg`: Top 20 clusters (among those clusters occurring in more than 100 samples) with largest surplus in lysates (top panel) when compared with homogenates (bottom panel).
+2. `Fig_S3_matched_largest_homogenate_surplus.jpg`: Top 20 clusters (among those clusters occurring in more than 100 samples) with largest surplus in homogenates (top panel) when compared with homogenates (bottom panel).
+3. `Fig_S4_Scatter_all_famillies.jpg`: Scatterplot summarizing lysate to homogenate number of reads obtained per family (limited to Arthropoda), across 856 samples (treatment pairs).
+4. `Fig_S5_15samples_reads_biomass.jpg`: Selected samples - sequencing depth and biomass. Histogram shows the total number of reads per sample for both lysate and homogenate as well as the biomass (wet weight) of each sample.
+5. `Fig_S6_15Samples_Top10_Ratio.jpg`: Lysate-to-homogenate read ratios for 15 samples.
 
 And additional exploratory figures:
 `Fig_matched_most_occurring.jpg`: Illustrates the pattern for the 20 clusters detected in the largest number of samples among the samples with both lysate and homogenate data.
