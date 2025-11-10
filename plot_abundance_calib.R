@@ -71,7 +71,7 @@ calibrate_reads_bio <- function(X) {
         D$residual[idx] <- fit$residuals
         D$mean[idx] <- mean(D$reads[idx])
     }
-    D$calibrated_reads <- D$mean*(D$reads/(D$reads-D$residual))
+    D$calibrated_reads <- mean(fit$fitted.values)*(D$reads/fit$fitted.values)
     
     return(D)
 }
@@ -119,8 +119,8 @@ calibrate_reads_bio_synth <- function(X) {
         D$residual1[idx] <- fit1$residuals
         D$residual2[idx] <- fit2$residuals
     }
-    D$synth_calibrated_reads <- D$mean*(D$reads/(D$reads-D$residual1))
-    D$spikein_calibrated_reads <- D$mean*(D$reads/(D$reads-D$residual2))
+    D$synth_calibrated_reads <- mean(fit1$fitted.values)*(D$reads/fit1$fitted.values)
+    D$spikein_calibrated_reads <- mean(fit2$fitted.values)*(D$reads/fit2$fitted.values)
 
     return(D)
 }
