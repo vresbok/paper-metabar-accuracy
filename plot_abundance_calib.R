@@ -197,7 +197,7 @@ p6 <- vio_plot(data.frame(list(cluster=DH$cluster, reads=DH$spikein_calibrated_r
 # ggsave(file="Fig_homogenate_cals.jpg", height=7, width=7, plot = (p3 + p4)/(p5 + p6))
 
 # Join all calibrations in one figure
-ggsave(file="Fig_calibrations.jpg", height=10.5, width=7, plot = (p1 + p2 + p3 + p4 + p5 + p6) + plot_layout(axis_titles="collect",ncol=2) + plot_annotation(tag_levels="A"))
+ggsave(file="Figures/Fig_calibrations.jpg", height=10.5, width=7, plot = (p1 + p2 + p3 + p4 + p5 + p6) + plot_layout(axis_titles="collect",ncol=2) + plot_annotation(tag_levels="A"))
 
 
 # Repeat plots with only samples for which there is both lysate and homogenate data
@@ -226,5 +226,5 @@ p5 <- vio_plot(data.frame(list(cluster=DH$cluster, reads=DH$bio_calibrated_reads
 p6 <- vio_plot(data.frame(list(cluster=DH$cluster, reads=DH$spikein_calibrated_reads)), x_labels)
 
 # Join all calibrations for shared samples in one figure
-ggsave(file="Fig_calibrations_shared.jpg", height=10.5, width=7, plot = (p1 + p2 + p3 + p4 + p5 + p6) + plot_layout(axis_titles="collect",ncol=2) + plot_annotation(tag_levels="A"))
+ggsave(file="Figures/Fig_calibrations_shared.jpg", height=10.5, width=7, plot = (p1 + p2 + p3 + p4 + p5 + p6) + plot_layout(axis_titles="collect",ncol=2) + plot_annotation(tag_levels="A"))
 
