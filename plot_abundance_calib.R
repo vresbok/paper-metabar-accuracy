@@ -69,6 +69,7 @@ calibrate_reads_bio <- function(X) {
         D$reads[idx] <- D$reads[idx] / specimens    # Measure reads/specimen
         fit <- lm(D$reads[idx]~D$spikein_reads[idx]+0)
         D$residual[idx] <- fit$residuals
+        D$fitted.values[idx] <- fit$fitted.values
         D$mean[idx] <- mean(D$reads[idx])
     }
     D$calibrated_reads <- mean(fit$fitted.values)*(D$reads/fit$fitted.values)
@@ -118,6 +119,8 @@ calibrate_reads_bio_synth <- function(X) {
 #        print(summary(fit2))
         D$residual1[idx] <- fit1$residuals
         D$residual2[idx] <- fit2$residuals
+        D$fitted.values1[idx] <- fit1$fitted.values
+        D$fitted.values2[idx] <- fit2$fitted.values
     }
     D$synth_calibrated_reads <- mean(fit1$fitted.values)*(D$reads/fit1$fitted.values)
     D$spikein_calibrated_reads <- mean(fit2$fitted.values)*(D$reads/fit2$fitted.values)
@@ -146,7 +149,7 @@ H <- get_iba_co1_data(
                       calibrate=FALSE,
                       remove_spikes=FALSE
                      )
-cat("Completed reading of all data; computing plots\n")
+cat("Computing plots\n")
 
 L <- data.frame(L)
 H <- data.frame(H)
@@ -228,3 +231,45 @@ p6 <- vio_plot(data.frame(list(cluster=DH$cluster, reads=DH$spikein_calibrated_r
 # Join all calibrations for shared samples in one figure
 ggsave(file="Figures/Fig_calibrations_shared.jpg", height=10.5, width=7, plot = (p1 + p2 + p3 + p4 + p5 + p6) + plot_layout(axis_titles="collect",ncol=2) + plot_annotation(tag_levels="A"))
 
+
+# Check if calibrated reads are approximately log_normal
+# ------------------------------------------------------
+
+# Set spikein_names
+spikein_names <- c("Shelfordella lateralis",
+                   "Gryllus bimaculatus",
+                   "Gryllodes sigillatus",
+                   "Drosophila bicornuta",
+                   "Drosophila serrata",
+                   "Drosopila jambolina")
+
+# Spikein-calibrated lysate reads
+dens_plot <- function (df, spikein, spikein_name) {
+    df <- df[df$cluster==spikein,]
+    df$log10_rel_error <- log10(df$reads/df$fitted.values)
+    ggplot(df, aes(x = log10_rel_error)) +
+        geom_density(fill = "steelblue", alpha = 0.4) +
+        labs(title = spikein_name,
+            x = "Relative error (log10)",
+            y = "Density") +
+        theme_minimal()
+}
+
+p1 <- dens_plot(D, bio_spikes[1], spikein_names[1])
+p2 <- dens_plot(D, bio_spikes[2], spikein_names[2])
+p3 <- dens_plot(D, bio_spikes[3], spikein_names[3])
+p4 <- dens_plot(D, bio_spikes[4], spikein_names[4])
+p5 <- dens_plot(D, bio_spikes[5], spikein_names[5])
+p6 <- dens_plot(D, bio_spikes[6], spikein_names[6])
+
+ggsave(file="Figures/Fig_rel_cal_error_lysates.jpg", height=10.5, width=7, plot = (p1 + p2 + p3 + p4 + p5 + p6) + plot_layout(axis_titles="collect",ncol=2) + plot_annotation(tag_levels="A"))
+
+# Bio spike-in-calibrated homogenate reads
+p1 <- dens_plot(DH, bio_spikes[1], spikein_names[1])
+p2 <- dens_plot(DH, bio_spikes[2], spikein_names[2])
+p3 <- dens_plot(DH, bio_spikes[3], spikein_names[3])
+p4 <- dens_plot(DH, bio_spikes[4], spikein_names[4])
+p5 <- dens_plot(DH, bio_spikes[5], spikein_names[5])
+p6 <- dens_plot(DH, bio_spikes[6], spikein_names[6])
+
+ggsave(file="Figures/Fig_rel_cal_error_homogenates.jpg", height=10.5, width=7, plot = (p1 + p2 + p3 + p4 + p5 + p6) + plot_layout(axis_titles="collect",ncol=2) + plot_annotation(tag_levels="A"))
