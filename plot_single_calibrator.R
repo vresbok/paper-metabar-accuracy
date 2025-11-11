@@ -79,7 +79,7 @@ p_simple <- ggplot(plot_df,
         legend.position = "bottom")
 
 #ggsave("Figures/Fig_single_spikein_calibration.pdf",
-       plot = p_simple, width = 8, height = 4)
+#       plot = p_simple, width = 8, height = 4)
 
 ### Plot efficiency by calibrator ---------------------------
 # (Coefficient of variation of target vs. the calibrator’s overall read proportion)
