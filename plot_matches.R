@@ -11,7 +11,7 @@ D <- read.delim("matched_lysate_homogenate.tsv.gz")
 D <- D[D$lysate_reads >0 | D$homogenate_reads > 0,]
 
 # Sample metadata file from figshare repo:
-meta_Biomass <- read.delim("~/Desktop/git/figshare-repos/iba/raw_data/v6/samples_metadata_malaise_SE.tsv")
+meta_Biomass <- read.delim("~/dev/figshare-repos/iba/raw_data/v6/samples_metadata_malaise_SE.tsv")
 
 #EXPLORATORY
 ## limiting number of taxa shown
@@ -86,7 +86,7 @@ plot<- ggplot(D_family, aes(x = lysate_mean + 1, y = homogenate_mean + 1, color 
     color = "Order"
   ) +
   theme_minimal()
-ggsave(file="Fig_S4_Scatter_all_famillies.jpg", height=7, width=14, plot = plot)
+ggsave(file="./Figures/Scatter_all_famillies.jpg", height=7, width=14, plot = plot)
 plot
 
 ########## Calculate Lysate-to-Homogenate RATIO
@@ -153,16 +153,9 @@ as<-ggplot(D_filtered_plot_500, aes(x = lys_homog_ratio, y = Family, fill = Orde
   )
 as
 ggsave(file="Figures/Fig2_All_Samples_500_Ratio.jpg", height=13, width=7, plot = as)
-?scale_x_log10()
+
 ### "ZERO clusters"
 ####### Look at those clusters that had count of 0 in one or the other treatment (lysis/homog)
-# subset with zeros in either lysate or homogenate
-#D2 <- D_filtered %>%
-# mutate(
-#  lysate_reads = ifelse(lysate_reads < 20, 0, lysate_reads),
-#  homogenate_reads = ifelse(homogenate_reads < 20, 0, homogenate_reads)
-#)
-
 # Get matched data again (cause RATIO plotting turned all rows with "0" into NAs)
 D2 <- read.delim("matched_lysate_homogenate.tsv")
 D2 <- D2[D2$lysate_reads >0 | D2$homogenate_reads > 0,]
@@ -229,9 +222,48 @@ p2 <- ggplot(ZERO_summary, aes(x = n_clusters, y = taxon2, fill = category)) +
 p2
 ggsave(file="Fig2_treatment_exclusive_clusters.jpg", height=13, width=7, plot = p2)
 
-####
-# Plot homogenate to lysate OTU ratio (y axis) and reads/mg (x axis) for the 856 samples.
+#Plot PERCENTAGE of clusters that were recovere in one or the other treatment:
+ZERO_summary <- D2_filtered_plot_zeros %>%
+  mutate(category = case_when(
+    lysate_reads > 0 & homogenate_reads == 0 ~ "lysate_only",
+    lysate_reads == 0 & homogenate_reads > 0 ~ "homogenate_only",
+    TRUE ~ "zero_in_both"
+  )) %>%
+  filter(category != "zero_in_both") %>%
+  group_by(Order, Family, taxon2, category) %>%
+  summarise(n_clusters = n_distinct(cluster), .groups = "drop") %>%
+  filter(taxon2 %in% families_in_p1)
+# Get total number of clusters per family (in full D2)
+total_clusters <- D2 %>%
+  filter(Phylum == "Arthropoda") %>%
+  mutate(taxon2 = paste0(Family, " (", Order, ")")) %>%
+  filter(!str_detect(taxon2, "unclassified"),
+         !str_detect(taxon2, "_X")) %>%
+  group_by(Order, Family, taxon2) %>%
+  summarise(total_clusters = n_distinct(cluster), .groups = "drop")
 
+# Combine ZERO_summary (exclusive clusters) with total cluster counts
+ZERO_summary_pct <- ZERO_summary %>%
+  left_join(total_clusters, by = c("Order", "Family", "taxon2")) %>%
+  mutate(perc_clusters = 100 * n_clusters / total_clusters)
+
+p3 <- ggplot(ZERO_summary_pct, aes(x = perc_clusters, y = taxon2, fill = category)) +
+  geom_col(position = "dodge") +
+  facet_grid(rows = vars(Order), scales = "free_y", space = "free_y") +
+  theme_minimal() +
+  theme(
+    strip.text.y = element_blank(),
+    panel.border = element_rect(color = "black", fill = NA, linewidth = 0.5),
+    strip.background = element_rect(fill = "gray90", color = "black")
+  ) +
+  scale_fill_manual(values = c("lysate_only" = "#FD6467", "homogenate_only" = "darkgrey")) +
+  labs(x = "Percentage of clusters (%)", y = "", fill = "Category")
+p3
+ggsave("./Figures/Fig2_treatment_exclusive_clusters_percentage.jpg", height = 13, width = 7, plot = p3)
+
+
+####
+# Plot homogenate to lysate OTU ratio (y axis) in relation to reads/mg (x axis) for the 856 samples.
 ## Add biomass (meta_Biomass) info to the counts (D_filtered)
 merged <- merge(
   D_filtered,
@@ -269,12 +301,6 @@ summary_per_sample <- merged %>%
 # View the result
 head(summary_per_sample)
 
-# Save to CSV
-#write.csv(summary_per_sample, "cluster_summary_per_sample.csv", row.names = FALSE)
-
-library(ggplot2)
-library(dplyr)
-
 # Calculate and store the ratio for plotting
 plot_data <- summary_per_sample %>%
   mutate(
@@ -299,9 +325,7 @@ rr<-ggplot(filtered_plot_data, aes(x = reads_per_biomass, y = ratio_shared_lys))
     panel.grid.minor = element_blank(),
     plot.title = element_text(face = "bold")
   )
-ggsave(file="Fig_S99_ratio_homogenate_retrieval.jpg", height=7, width=8, plot = rr)
-
-
+ggsave(file="./Figures/Ratio_homogenate_retrieval.jpg", height=7, width=8, plot = rr)
 
 
 #### for the selected 15 samples only:
@@ -353,7 +377,7 @@ mass<-ggplot(read_summary_biomass, aes(x = sample)) +
     axis.text.x = element_text(angle = 45, hjust = 1)
   )
 mass
-ggsave(file="Fig_S5_15samples_reads_biomass.jpg", height=7, width=8, plot = mass)
+ggsave(file="./Figures/Fig_15samples_reads_biomass.jpg", height=7, width=8, plot = mass)
 
 ## Exploring 15 sample data by scatter plots:
 ## Prep data - filter out anything but Arthropoda

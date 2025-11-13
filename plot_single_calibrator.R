@@ -8,6 +8,7 @@ library(tidyr)
 library(RColorBrewer)
 
 # Get the coefficient of variation values
+setwd("~/Desktop/git/paper-metabar-accuracy/")
 source("get_0to5_calibration_error.R")
 
 
@@ -127,6 +128,8 @@ p_eff_by_cal <- ggplot(eff_all,
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1),
         legend.position = "bottom")
+
+p_eff_by_cal
 
 ggsave("Figures/Fig_spikein_efficiency_by_calibrator.pdf",
        plot = p_eff_by_cal, width = 8, height = 4)
